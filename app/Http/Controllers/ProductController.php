@@ -4,6 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\Product;
 use Illuminate\Http\Request;
+use App\Http\Requests\StoreProductRequest;
+use App\Http\Requests\UpdateProductRequest;
+use Illuminate\Support\Facades\DB;
+use Inertia\Inertia;
 
 class ProductController extends Controller
 {
@@ -12,12 +16,11 @@ class ProductController extends Controller
      */
     public function index()
     {
-        $products = Product::all();
+        $products = Product::all(); // ดึงข้อมูลทั้งหมด
 
-        return response()->json([
-            'message' => 'รายการสินค้าทั้งหมด',
-            'data' => $products
-        ], 200);
+        return Inertia::render('Product_Page/Welcome_Product', [ // นำมาแสดงหน้า product
+            'products' => $products
+        ]);
     }
 
     /**
@@ -34,7 +37,7 @@ class ProductController extends Controller
     public function store(Request $request)
     {
         //
-        $request->validate([
+        $request->validate([  // ตรวจสอบข้อมูล
             'email' => 'required|email',
             'password' => 'required',
             'device_name' => 'required'

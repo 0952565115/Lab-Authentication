@@ -31,21 +31,21 @@ class UserController extends Controller
     public function store(Request $request)
     {
         //
-        $request->validate([
+        $request->validate([ // ตรวจสอบข้อมูลที่ส่งมา
             'email' => 'required|email',
             'password' => 'required',
             'device_name' => 'required',
         ]);
      
-        $user = User::where('email', $request->email)->first();
+        $user = User::where('email', $request->email)->first(); // ค้นหา user ใน database
      
-        if (! $user || ! Hash::check($request->password, $user->password)) {
+        if (! $user || ! Hash::check($request->password, $user->password)) { // ตรวจสอบ ถ้าไม่มี user จะแจ้งเตือน
             throw ValidationException::withMessages([
                 'email' => ['The provided credentials are incorrect.'],
             ]);
         }
      
-        return $user->createToken($request->device_name)->plainTextToken;
+        return $user->createToken($request->device_name)->plainTextToken; // สร้าง token และเก็บข้อมูลไว้ใน datadase
     
     }
 
@@ -79,7 +79,7 @@ class UserController extends Controller
     public function destroy(User $user)
     {
         //
-        $user->tokens()->delete();
+        $user->tokens()->delete(); // ดึงข้อมูลทั้งหมดของ Token ที่เกี่ยวข้องกับผู้ใช้ แล้วลบทุก token ออกจากระบบ
         
         return response()->json(['message' => 'Logged out'], 200);
     }
